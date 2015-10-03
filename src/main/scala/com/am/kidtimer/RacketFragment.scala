@@ -1,4 +1,4 @@
-package com.example.pingpong
+package com.am.kidtimer
 
 import android.view.{Gravity, ViewGroup, LayoutInflater}
 import android.os.Bundle

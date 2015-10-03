@@ -14,7 +14,7 @@
 
         <activity
           android:label="Macroid Akka Ping-pong"
-          android:name=".MainActivity">
+          android:name="com.am.kidtimer.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

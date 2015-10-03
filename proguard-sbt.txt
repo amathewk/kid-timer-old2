@@ -87,10 +87,6 @@
     public java.lang.String toString();
 }
 
--keep class scala.collection.immutable.StringOps {
-    *** toInt();
-}
-
 -keepclassmembernames class scala.concurrent.forkjoin.ForkJoinPool {
     long eventCount;
     int  workerCounts;

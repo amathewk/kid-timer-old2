@@ -1,7 +1,7 @@
 android.Plugin.androidBuild
 platformTarget in Android := "android-21"
 
-name := """macroid-akka-pingpong"""
+name := """kid-timer"""
 
 scalaVersion := "2.11.4"
 javacOptions ++= Seq("-target", "1.7", "-source", "1.7") // so we can build with java8

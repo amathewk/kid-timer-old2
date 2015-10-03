@@ -1,4 +1,4 @@
-package com.example.pingpong
+package com.am.kidtimer
 
 import akka.actor.{Props, ActorLogging, ActorRef}
 import macroid.akka.FragmentActor

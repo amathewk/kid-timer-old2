@@ -1,4 +1,4 @@
-package com.example.pingpong
+package com.am.kidtimer
 
 import android.app.Activity
 import android.os.Bundle
@@ -6,7 +6,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
 import android.util.Log
 import android.widget.{EditText, Button, TextView, LinearLayout}
-import com.example.pingpong
+import com.am.kidtimer
 import macroid._
 import macroid.contrib._
 import macroid.FullDsl._
@@ -33,7 +33,7 @@ class MainActivity extends Activity with Contexts[Activity] {
   var tts : TextToSpeech = null
   //  val startButton, stopButton
 
-  import com.example.pingpong.CountingState._
+  import com.am.kidtimer.CountingState._
   @volatile var countState : CountingState = Initializing
 
   override def onCreate(savedInstanceState: Bundle) = {
