@@ -1,0 +1,65 @@
+//package com.example.pingpong
+//
+//import android.os.Bundle
+//import android.widget.{EditText, Button, TextView, LinearLayout}
+//import android.view.ViewGroup.LayoutParams._
+//import android.support.v4.app.FragmentActivity
+//import macroid.contrib.TextTweaks
+//
+//// import macroid stuff
+//import macroid._
+//import macroid.FullDsl._
+//import macroid.akka.AkkaActivity
+//
+///** The main activity */
+//class MainActivity extends FragmentActivity with Contexts[FragmentActivity] {
+////  // name of our actor system
+////  val actorSystemName = "pingpong"
+////
+////  // players
+////  lazy val ping = actorSystem.actorOf(RacketActor.props, "ping")
+////  lazy val pong = actorSystem.actorOf(RacketActor.props, "pong")
+//
+//  val popupToast = toast("hii")
+//
+//  override def onCreate(savedInstanceState: Bundle) = {
+//    super.onCreate(savedInstanceState)
+//
+//    // layout params
+//    val lps = lp[LinearLayout](MATCH_PARENT, WRAP_CONTENT, 1.0f)
+//
+//    var countStart = slot[EditText]
+//    var countDelay = slot[EditText]
+//
+//
+//    // include the two fragments
+//    val view = l[LinearLayout](
+//      w[TextView] <~ text("start"),
+//      w[EditText] <~ wire(countStart),
+//      w[TextView] <~ text("delay"),
+//      w[EditText] <~ wire(countDelay),
+//      w[Button]  <~ text("count") <~ On.click {
+//        runUi {
+//          popupToast
+//        }
+//      }
+//    ) <~ vertical
+//
+//    setContentView(getUi(view))
+//  }
+//
+//  override def onStart() = {
+//    super.onStart()
+//
+//    // start the game
+////    ping.tell(RacketActor.Ball, pong)
+//
+//  }
+//
+//}
+//
+//object FormField {
+//  def simple(default: String)(implicit appCtx: AppContext) =
+//    TextTweaks.large +
+//      text(default)
+//}
