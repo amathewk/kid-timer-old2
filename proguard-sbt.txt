@@ -114,7 +114,7 @@
 -keep class android.test.InstrumentationTestRunner { <init>(...); }
 
 # view AndroidManifest.xml #generated:8
--keep class com.example.pingpong.MainActivity { <init>(...); }
+-keep class com.am.kidtimer.MainActivity { <init>(...); }
 
 -ignorewarnings
 -keep class scala.Dynamic

@@ -36,26 +36,27 @@ class MainActivity extends Activity with Contexts[Activity] {
   import com.am.kidtimer.CountingState._
   @volatile var countState : CountingState = Initializing
 
+  val statusTextView = w[TextView]
+
   override def onCreate(savedInstanceState: Bundle) = {
     super.onCreate(savedInstanceState)
-
+//    statusTextView <~ wire(display)
     val view = l[LinearLayout](
       w[Button] <~
         text("Countdown!") <~
         On.click {
-          startCount()
-          display <~ text(s"${count.get.getText}, ${time.get.getText}")
+          Ui {
+            startCount()
+          }
         },
       w[EditText] <~
         wire(count) <~
-        OurTweaks.textBox("10"),
+        OurTweaks.textBox("5"),
       w[EditText] <~
         wire(time) <~
-        OurTweaks.textBox("60"),
-      w[TextView] <~
-        wire(display)
+        OurTweaks.textBox("5"),
+      statusTextView
     ) <~ OurTweaks.orient
-
     setContentView(getUi(view))
     tts = new TextToSpeech(getApplicationContext(), ttsInitListener)
   }
@@ -68,9 +69,16 @@ class MainActivity extends Activity with Contexts[Activity] {
       Future {
         countdown(convertResult.count.get, convertResult.time.get)
       }
+      val msg = s"${count.get.getText}, ${time.get.getText}"
+      Log.i(LOG_TAG, msg)
+//      val action = Ui {
+        statusTextView.get.setText(msg)
+//      }
+//      action.run
     } else {
       val msg = convertResult.msgs.foldLeft("") { (s1: String, s2: String) => s1 + "\n" + s2 }
-//      display <~ text(msg)
+      Log.i(LOG_TAG, s"convert result is not valid $msg")
+      display <~ text(msg)
     }
   }
 
@@ -113,7 +121,7 @@ class MainActivity extends Activity with Contexts[Activity] {
   def countdown(count: Int, time: Int) : Unit = {
     Log.i(LOG_TAG, s"countdown starting... count = $count, time = $time")
     Log.d(LOG_TAG, s"countState = $countState")
-    if(countState == Counting) return
+    if(countState == Counting) { Log.i(LOG_TAG, "Counting in progress... returning."); return }
     while(countState == Initializing) {}
     countState = Counting
 
@@ -122,6 +130,7 @@ class MainActivity extends Activity with Contexts[Activity] {
     Log.i(LOG_TAG, s"Delay $delayInMillis")
 
     for(i <- 1 to count){
+      Log.d(LOG_TAG, s"$i ...")
       tts.speak(i.toString, TextToSpeech.QUEUE_ADD, null)
       if(countState == Interrupting) {
         countState = Ready
