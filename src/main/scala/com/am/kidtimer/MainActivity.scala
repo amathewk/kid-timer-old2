@@ -6,7 +6,6 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
 import android.util.Log
 import android.widget.{EditText, Button, TextView, LinearLayout}
-import com.am.kidtimer
 import macroid._
 import macroid.contrib._
 import macroid.FullDsl._
@@ -31,7 +30,6 @@ class MainActivity extends Activity with Contexts[Activity] {
   var display = slot[TextView]
 
   var tts : TextToSpeech = null
-  //  val startButton, stopButton
 
   import com.am.kidtimer.CountingState._
   @volatile var countState : CountingState = Initializing
@@ -40,14 +38,13 @@ class MainActivity extends Activity with Contexts[Activity] {
 
   override def onCreate(savedInstanceState: Bundle) = {
     super.onCreate(savedInstanceState)
-//    statusTextView <~ wire(display)
     val view = l[LinearLayout](
       w[Button] <~
         text("Countdown!") <~
         On.click {
-          Ui {
-            startCount()
-          }
+          val convertResult : ConvertResult = startCount()
+          val msgs = convertResult.msgs.foldLeft("") { (s1: String, s2: String) => s1 + "\n" + s2 }
+          display <~ text(msgs)
         },
       w[EditText] <~
         wire(count) <~
@@ -55,13 +52,13 @@ class MainActivity extends Activity with Contexts[Activity] {
       w[EditText] <~
         wire(time) <~
         OurTweaks.textBox("5"),
-      statusTextView
+      statusTextView <~ wire(display)
     ) <~ OurTweaks.orient
     setContentView(getUi(view))
     tts = new TextToSpeech(getApplicationContext(), ttsInitListener)
   }
 
-  def startCount() = {
+   def startCount() : ConvertResult = {
     val countVal : String =  count.get.getText.toString
     val timeVal : String =  time.get.getText.toString
     val convertResult: ConvertResult = convert(countVal, timeVal)
@@ -71,18 +68,15 @@ class MainActivity extends Activity with Contexts[Activity] {
       }
       val msg = s"${count.get.getText}, ${time.get.getText}"
       Log.i(LOG_TAG, msg)
-//      val action = Ui {
         statusTextView.get.setText(msg)
-//      }
-//      action.run
     } else {
       val msg = convertResult.msgs.foldLeft("") { (s1: String, s2: String) => s1 + "\n" + s2 }
       Log.i(LOG_TAG, s"convert result is not valid $msg")
-      display <~ text(msg)
     }
+    return convertResult
   }
 
-  /** validates the count and integer entries */
+  /** validates the count and integer entries and converts from String */
   def convert(count: String, time: String) : ConvertResult = {
     var valid = true
     val msgs = mutable.HashSet[String]()
@@ -140,7 +134,6 @@ class MainActivity extends Activity with Contexts[Activity] {
     }
     println((System.nanoTime() - startTime))
     countState = Ready
-    //    toast(count)
   }
 
 }
