@@ -5,7 +5,8 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
 import android.util.Log
-import android.widget.{EditText, Button, TextView, LinearLayout}
+import android.view.Gravity
+import android.widget._
 import macroid._
 import macroid.contrib._
 import macroid.FullDsl._
@@ -54,6 +55,8 @@ class MainActivity extends Activity with Contexts[Activity] {
         OurTweaks.textBox("5"),
       statusTextView <~ wire(display)
     ) <~ OurTweaks.orient
+//    statusTextView <~ gravity(Gravity.CENTER)
+
     setContentView(getUi(view))
     tts = new TextToSpeech(getApplicationContext(), ttsInitListener)
   }
@@ -63,18 +66,33 @@ class MainActivity extends Activity with Contexts[Activity] {
     val timeVal : String =  time.get.getText.toString
     val convertResult: ConvertResult = convert(countVal, timeVal)
     if(convertResult.valid == true) {
-      Future {
+      val f = Future {
         countdown(convertResult.count.get, convertResult.time.get)
+        "counting complete"
       }
+//      runUi {
+//        statusTextView <~ f.map(text)
+//      }
       val msg = s"${count.get.getText}, ${time.get.getText}"
       Log.i(LOG_TAG, msg)
-        statusTextView.get.setText(msg)
+      statusTextView.get.setText(msg)
     } else {
       val msg = convertResult.msgs.foldLeft("") { (s1: String, s2: String) => s1 + "\n" + s2 }
       Log.i(LOG_TAG, s"convert result is not valid $msg")
     }
     return convertResult
   }
+
+  def buttonPanel(implicit ctx: ActivityContext) =  l[FrameLayout](
+  w[Button] <~
+        text("Countdown!") <~
+        On.click {
+          val convertResult : ConvertResult = startCount()
+          val msgs = convertResult.msgs.foldLeft("") { (s1: String, s2: String) => s1 + "\n" + s2 }
+          display <~ text(msgs)
+        })
+
+  def formPanel(implicit ctx: ActivityContext)
 
   /** validates the count and integer entries and converts from String */
   def convert(count: String, time: String) : ConvertResult = {
@@ -138,7 +156,9 @@ class MainActivity extends Activity with Contexts[Activity] {
 
 }
 
-case class ConvertResult(valid: Boolean, msgs: mutable.Set[String], count: Option[Int], time: Option[Int])
+case class ConvertResult(valid: Boolean, msgs: mutable.Set[String], count: Option[Int], time: Option[Int]) {
+  def allMsgs = {msgs.foldLeft("") { (s1: String, s2: String) => s1 + "\n" + s2 }}
+}
 
 object CountingState extends Enumeration {
   type CountingState = Value
